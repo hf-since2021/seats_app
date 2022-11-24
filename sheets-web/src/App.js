@@ -1,6 +1,8 @@
 const App = () => {
   return (
-    <h1>テスト</h1>
+    <>
+      <input></input>
+    </>
   );
 }
 
