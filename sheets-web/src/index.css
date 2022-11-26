@@ -11,3 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.sheet-table td {
+  text-align: center;
+}
+
+.sheet-table input {
+  text-align: center;
+  background-color: #DDDDDD;
+  width: 20px;
+  border: 0;
+  ime-mode: disabled;
+}
+
+.sheet-table input:focus {
+  background-color: #BBBBBB;
+  outline: 0;
+}
