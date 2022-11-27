@@ -1,5 +1,12 @@
+import React, { useState } from "react";
+
 const App = () => {
-  const tableSize = [2,2];
+  const tableSize = [5,7];
+  const rowIndex    = [...Array(tableSize[0]).keys()];
+  const columnIndex = [...Array(tableSize[1]).keys()];
+  const sheets0 = rowIndex.map(()=>columnIndex.map(()=>{}));
+  const [sheets, setSheets] = useState(sheets0);
+  // console.log(sheets[1][2])
   const selectText = (e)=>{e.target.select()};
   const moveFocus = (e) => {
     const cellId = e.target.id.split("-").map(Number);
@@ -21,14 +28,14 @@ const App = () => {
           };
           break;
         case "ArrowDown":
-          if(cellId[0]<tableSize[0]){
+          if(cellId[0]<tableSize[0]-1){
             e.preventDefault();
             cellId[0] ++;
             document.getElementById(cellId.join("-")).focus();
           };
           break;
         case "ArrowRight":
-          if(cellId[1]<tableSize[1]){
+          if(cellId[1]<tableSize[1]-1){
             e.preventDefault();
             cellId[1] ++;
             document.getElementById(cellId.join("-")).focus();
@@ -37,24 +44,33 @@ const App = () => {
       };
     };
   };
+  const changeValue = (e) => {
+    const cellId = e.target.id.split("-").map(Number);
+    sheets0[cellId[0]][cellId[1]] = Number(e.target.value);
+    setSheets(sheets0);
+    console.log(sheets)
+  };
   return (
     <table className="sheet-table">
       <tbody>
-        <tr>
-          <td><input id={"0-0"} onKeyDown={moveFocus}></input></td>
-          <td><input id={"0-1"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-          <td><input id={"0-2"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-        </tr>
-        <tr>
-          <td><input id={"1-0"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-          <td><input id={"1-1"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-          <td><input id={"1-2"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-        </tr>
-        <tr>
-          <td><input id={"2-0"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-          <td><input id={"2-1"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-          <td><input id={"2-2"} onFocus={selectText} onKeyDown={moveFocus}></input></td>
-        </tr>
+        {rowIndex.map((r,i)=>{
+          return(
+            <tr key={i}>
+              {columnIndex.map((c,j)=>{
+                return(
+                  <td key={j}>
+                    <input id={`${r}-${c}`} 
+                           onFocus={selectText} 
+                           onKeyDown={moveFocus} 
+                           defaultValue={sheets[r][c]}
+                           onChange={changeValue}>
+                    </input>
+                  </td>
+                )
+              })}
+            </tr>
+          )
+        })}
       </tbody>
     </table>
   );
