@@ -21,10 +21,49 @@ code {
   background-color: #DDDDDD;
   width: 20px;
   border: 0;
-  ime-mode: disabled;
 }
 
 .sheet-table input:focus {
   background-color: #BBBBBB;
   outline: 0;
+}
+
+.student-list th {
+  font-size: 12px;
+}
+
+.student-list td {
+  font-size: 12px;
+  text-align: center;
+  background: #eee;
+}
+
+.student-list tr:nth-child(odd) td {
+	background: #fff;
+}
+
+.arrangement-card {
+  background-color: #DDDDDD;
+  margin: 0 10px 10px 0;
+  width: 100px;
+  height: 120px;
+  position: relative;
+}
+
+.shadow-gray {
+  box-shadow: 0px 0px 0px 5px rgba(128, 128, 128, 0.5);
+}
+
+.arrangement-card > .gcn {
+  border-bottom: 1px dashed #777777;
+}
+
+.arrangement-card > .name {
+  border-bottom: 1px dashed #777777;
+}
+
+.arrangement-card > p {
+  margin: 0;
+  padding: 0 5px;
+  line-height: 40px;
 }
