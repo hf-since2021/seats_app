@@ -21,6 +21,7 @@ const App = () => {
     {id:10, gcn:"2A10", name:"今野 一樹", kana:"ｺﾝﾉ ﾋﾄｷ", sex:"男"}
   ];
 
+  // arr（json配列）からsearchObj（key+value）を探してインデックスを返す
   const searchValue = (arr, searchObj) => {
     const values = arr.map(x => x[Object.keys(searchObj)[0]]);
     return values.indexOf(Object.values(searchObj)[0]);
@@ -37,7 +38,9 @@ const App = () => {
 
   const [studentArrangement, setStudentArrangement] = useState(studentArrangement0);
 
+  // セルがアクティブになったときに、全選択する
   const selectText = (e)=>{e.target.select()};
+  // ctrl or cmd + arrow keys でセル移動
   const moveFocus = (e) => {
     const cellId = e.target.id.split("-").map(Number);
     if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
