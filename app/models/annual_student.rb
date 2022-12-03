@@ -1,0 +1,2 @@
+class AnnualStudent < ApplicationRecord
+end
