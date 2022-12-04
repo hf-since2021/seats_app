@@ -15,7 +15,8 @@ const SheetTable = (props) => {
                             onFocus={props.selectText} 
                             onKeyDown={props.moveFocus} 
                             defaultValue={props.sheet[r][c]}
-                            onChange={props.changeValue} />
+                            onChange={props.changeValue}
+                            autoComplete="off" />
                     </td>
                   )
                 })}

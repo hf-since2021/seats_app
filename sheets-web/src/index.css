@@ -62,8 +62,9 @@ code {
   border-bottom: 1px dashed #777777;
 }
 
-.arrangement-card > p {
+.arrangement-card > div {
   margin: 0;
   padding: 0 5px;
+  height: 40px;
   line-height: 40px;
 }

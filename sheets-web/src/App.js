@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import NameList from "./components/NameList";
 import SheetTable from "./components/SheetTable"
 
 const App = () => {
   const tableSize = [5,6];
   const rowIndex    = [...Array(tableSize[0]).keys()];
   const columnIndex = [...Array(tableSize[1]).keys()];
-  const sheet0 = rowIndex.map(()=>columnIndex.map(()=>{}));
-  const [sheet, setSheet] = useState(sheet0);
+  const initialSheet = rowIndex.map(()=>columnIndex.map(()=>{}));
+  const [sheet, setSheet] = useState(initialSheet);
 
   const studentList = [
     {id:1, gcn:"2A01", name:"小西 伸江", kana:"ｺﾆｼ ﾉﾌﾞｴ", sex:"女"},
@@ -21,25 +22,53 @@ const App = () => {
     {id:10, gcn:"2A10", name:"今野 一樹", kana:"ｺﾝﾉ ﾋﾄｷ", sex:"男"}
   ];
 
+  const studentListURL = "http://localhost:3010/api/sheets/namelist";
+  const data = [
+    {id: 1, name: "abc"},
+    {id: 2, name: "def"},
+    {id: 3, name: "ghi"},
+  ];
+
+  const getStudentList = (url, postData) => {
+    return new Promise((resolve, reject) => {
+      // 
+      fetch(url , {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData)
+      }).then((res) => resolve(res.json()));
+    })
+  }
+
+  useEffect(() => {
+    const getStudentData = async () => {
+      const res = await getStudentList(studentListURL, data);
+      console.log(res);
+    };
+    getStudentData();
+  }, []);
+
   // arr（json配列）からsearchObj（key+value）を探してインデックスを返す
   const searchValue = (arr, searchObj) => {
     const values = arr.map(x => x[Object.keys(searchObj)[0]]);
     return values.indexOf(Object.values(searchObj)[0]);
   };
 
-  const studentArrangement0 = rowIndex.map((r)=>columnIndex.map((c)=>{
-    const index = searchValue(studentList, {id: sheet0[r][c]});
+  // 
+  const initialStudentArrangement = rowIndex.map((r)=>columnIndex.map((c)=>{
+    const index = searchValue(studentList, {id: initialSheet[r][c]});
     if(index > -1){
       return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
     }else{
-      return {gcn: "　", name: "　", kana: "　"}
+      return {gcn: "", name: "", kana: ""}
     }
   }));
 
-  const [studentArrangement, setStudentArrangement] = useState(studentArrangement0);
+  const [studentArrangement, setStudentArrangement] = useState(initialStudentArrangement);
 
   // セルがアクティブになったときに、全選択する
   const selectText = (e)=>{e.target.select()};
+
   // ctrl or cmd + arrow keys でセル移動
   const moveFocus = (e) => {
     const cellId = e.target.id.split("-").map(Number);
@@ -87,7 +116,7 @@ const App = () => {
     if(index > -1){
       newStudentArrangement[cellId[0]][cellId[1]] = {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
     }else{
-      newStudentArrangement[cellId[0]][cellId[1]] = {gcn: "　", name: "　", kana: "　"}
+      newStudentArrangement[cellId[0]][cellId[1]] = {gcn: "", name: "", kana: ""}
     }
     setStudentArrangement(newStudentArrangement);
     console.log(studentArrangement);
@@ -101,35 +130,14 @@ const App = () => {
           <SheetTable 
             rowIndex={rowIndex}
             columnIndex={columnIndex}
+            sheet={sheet}
             selectText={selectText}
             moveFocus={moveFocus}
-            sheet={sheet}
             changeValue={changeValue}
           />
-          <table className="student-list">
-            <thead>
-              <tr>
-                <th>席</th>
-                <th>年組番</th>
-                <th>氏名</th>
-                <th>フリガナ</th>
-                <th>性</th>
-              </tr>
-            </thead>
-            <tbody>
-              {studentList.map((student,key)=>{
-                return(
-                  <tr key={key}>
-                    <td>{student.id}</td>
-                    <td>{student.gcn}</td>
-                    <td>{student.name}</td>
-                    <td>{student.kana}</td>
-                    <td style={student.sex=="女" ? {color: "red"} : {color: "blue"}}>{student.sex}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <NameList
+            studentList={studentList}
+          />
         </div>
         <div style={{display: "table-cell", "vertical-align": "top"}}>
           <table>
@@ -141,9 +149,9 @@ const App = () => {
                       return(
                         <td key={colKey}>
                           <div className="arrangement-card">
-                            <p className="gcn" >{studentArrangement[r][c].gcn}</p>
-                            <p className="name">{studentArrangement[r][c].name}</p>
-                            <p className="kana">{studentArrangement[r][c].kana}</p>
+                            <div className="gcn" >{studentArrangement[r][c].gcn}</div>
+                            <div className="name">{studentArrangement[r][c].name}</div>
+                            <div className="kana">{studentArrangement[r][c].kana}</div>
                           </div>
                         </td>
                       )
