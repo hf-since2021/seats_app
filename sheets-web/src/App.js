@@ -23,26 +23,34 @@ const App = () => {
   ];
 
   const studentListURL = "http://localhost:3010/api/sheets/namelist";
-  const data = [
-    {id: 1, name: "abc"},
-    {id: 2, name: "def"},
-    {id: 3, name: "ghi"},
-  ];
+  // const data = [
+  //   {id: 1, name: "abc"},
+  //   {id: 2, name: "def"},
+  //   {id: 3, name: "ghi"},
+  // ];
+  const params = {
+    a: "xxx",
+    b: "yyy",
+    c: "zzz",
+  }
 
-  const getStudentList = (url, postData) => {
+  const query_params = new URLSearchParams(params); 
+  // const getStudentList = (url, postData) => {
+  const getStudentList = (url) => {
     return new Promise((resolve, reject) => {
       // 
       fetch(url , {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData)
+        method: "GET",
+        // headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify(postData)
       }).then((res) => resolve(res.json()));
     })
   }
 
   useEffect(() => {
     const getStudentData = async () => {
-      const res = await getStudentList(studentListURL, data);
+      // const res = await getStudentList(studentListURL, data);
+      const res = await getStudentList(`${studentListURL}?${query_params}`);
       console.log(res);
     };
     getStudentData();

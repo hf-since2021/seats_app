@@ -9,6 +9,6 @@ class CreateAnnualStudents < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_foreign_key :annual_students, :students, column: :student_code, primary_key: "code"
+    add_foreign_key :annual_students, :students, column: :student_code, primary_key: :code
   end
 end

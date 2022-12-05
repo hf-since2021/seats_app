@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   scope :api do
     resources :sheets, only: [:index] do
       collection do
-        post "namelist"
+        get "namelist"
       end
     end
   end
