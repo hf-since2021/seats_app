@@ -23,11 +23,7 @@ const App = () => {
   ];
 
   const studentListURL = "http://localhost:3010/api/sheets/namelist";
-  // const data = [
-  //   {id: 1, name: "abc"},
-  //   {id: 2, name: "def"},
-  //   {id: 3, name: "ghi"},
-  // ];
+
   const params = {
     a: "xxx",
     b: "yyy",
@@ -113,6 +109,7 @@ const App = () => {
       };
     };
   };
+
   const changeValue = (e) => {
     const cellId = e.target.id.split("-").map(Number);
     const newSheet = [...sheet];
@@ -133,6 +130,83 @@ const App = () => {
   // props: rowIndex, columnIndex, selectText, moveFocus, sheet, changeValue
   return (
     <>
+      <div style={{height: "50px"}}>
+        <div style={{display: "inline-block"}}>
+          <input type="radio" name="list-type" value="klass" />
+          <div style={{display: "inline-block"}}>学級</div>
+          <select style={{width: "40px", "margin-left": "10px"}}>
+            <option value="1">---</option>
+            <option value="2">1A</option>
+            <option value="3">1B</option>
+            <option value="4">1C</option>
+            <option value="5">1D</option>
+          </select>
+        </div>
+        <div style={{display: "inline-block", "margin-left": "20px"}}>
+          <input type="radio" name="list-type" value="lesson" />
+          <div style={{display: "inline-block"}}>授業</div>
+          <select style={{width: "100px", "margin-left": "10px"}}>
+            <option value="1">--------</option>
+            <option value="2">1A-国語</option>
+            <option value="3">1B-国語</option>
+            <option value="4">1C-国語</option>
+            <option value="5">1D-国語</option>
+          </select>
+        </div>
+        <div style={{display: "inline-block", "margin-left": "20px"}}>
+          <div style={{display: "inline-block"}}>レイアウト</div>
+          <div style={{display: "inline-block", "margin-left": "5px"}}>前後</div>
+          <select style={{width: "50px", "margin-left": "5px"}}>
+            <option value="4">4席</option>
+            <option value="5" selected>5席</option>
+            <option value="6">6席</option>
+            <option value="7">7席</option>
+            <option value="8">8席</option>
+          </select>
+          <div style={{display: "inline-block", "margin-left": "5px"}}>× 左右</div>
+          <select style={{width: "50px", "margin-left": "5px"}}>
+            <option value="4">4席</option>
+            <option value="5">5席</option>
+            <option value="6" selected>6席</option>
+            <option value="7">7席</option>
+            <option value="8">8席</option>
+          </select>
+        </div>
+        <div style={{display: "inline-block", "margin-left": "20px"}}>
+          <button>新規作成</button>
+        </div>
+
+        <br></br>
+
+        <div style={{display: "inline-block"}}>
+          (あなた)の座席表
+        </div>
+        <select style={{width: "150px", "margin-left": "10px"}}>
+          <option value="1">--------</option>
+          <option value="2">1A-国語（１）</option>
+          <option value="3">1B-国語（１）</option>
+          <option value="4">1C-国語（１）</option>
+          <option value="5">1D-国語（１）</option>
+        </select>
+        <div style={{display: "inline-block", "margin-left": "20px"}}>
+          <button>編集</button>
+        </div>
+
+        <div style={{display: "inline-block", "margin-left": "40px"}}>
+          他ユーザーの座席表
+        </div>
+        <select style={{width: "150px", "margin-left": "10px"}}>
+          <option value="1">--------</option>
+          <option value="2">1A-数学（１）</option>
+          <option value="3">1B-数学（１）</option>
+          <option value="4">1C-数学（１）</option>
+          <option value="5">1D-数学（１）</option>
+        </select>
+        <div style={{display: "inline-block", "margin-left": "20px"}}>
+          <button>コピーして編集</button>
+        </div>
+      </div>
+
       <div style={{display: "table"}}>
         <div style={{display: "table-cell", "padding-right": "30px", "vertical-align": "top"}}>
           <SheetTable 
