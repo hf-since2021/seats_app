@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import NameList from "./components/NameList";
 import SheetTable from "./components/SheetTable"
+import StudentArrangement from "./components/StudentArrangement"
 
 const App = () => {
+  // state: sheet, studentArrangement
+
+  // 座席入力欄の初期化
   const tableSize = [5,6];
   const rowIndex    = [...Array(tableSize[0]).keys()];
   const columnIndex = [...Array(tableSize[1]).keys()];
   const initialSheet = rowIndex.map(()=>columnIndex.map(()=>{}));
   const [sheet, setSheet] = useState(initialSheet);
 
+  // 生徒情報、APIで取得予定
   const studentList = [
     {id:1, gcn:"2A01", name:"小西 伸江", kana:"ｺﾆｼ ﾉﾌﾞｴ", sex:"女"},
     {id:2, gcn:"2A02", name:"永井 浩治", kana:"ﾅｶﾞｲ ｺｳｼﾞ", sex:"男"},
@@ -22,14 +27,13 @@ const App = () => {
     {id:10, gcn:"2A10", name:"今野 一樹", kana:"ｺﾝﾉ ﾋﾄｷ", sex:"男"}
   ];
 
+  // 生徒情報取得リクエスト（未完成）
   const studentListURL = "http://localhost:3010/api/sheets/namelist";
-
   const params = {
     a: "xxx",
     b: "yyy",
     c: "zzz",
   }
-
   const query_params = new URLSearchParams(params); 
   // const getStudentList = (url, postData) => {
   const getStudentList = (url) => {
@@ -58,7 +62,7 @@ const App = () => {
     return values.indexOf(Object.values(searchObj)[0]);
   };
 
-  // 
+  // 座席の配置に表示する情報
   const initialStudentArrangement = rowIndex.map((r)=>columnIndex.map((c)=>{
     const index = searchValue(studentList, {id: initialSheet[r][c]});
     if(index > -1){
@@ -67,7 +71,6 @@ const App = () => {
       return {gcn: "", name: "", kana: ""}
     }
   }));
-
   const [studentArrangement, setStudentArrangement] = useState(initialStudentArrangement);
 
   // セルがアクティブになったときに、全選択する
@@ -124,10 +127,31 @@ const App = () => {
       newStudentArrangement[cellId[0]][cellId[1]] = {gcn: "", name: "", kana: ""}
     }
     setStudentArrangement(newStudentArrangement);
-    console.log(studentArrangement);
+    // console.log(studentArrangement);
   };
 
-  // props: rowIndex, columnIndex, selectText, moveFocus, sheet, changeValue
+  const clickNewButton = () => {
+    const newTableSize = [Number(document.getElementById("row").value),Number(document.getElementById("column").value)];
+    const newRowIndex    = [...Array(newTableSize[0]).keys()];
+    const newColumnIndex = [...Array(newTableSize[1]).keys()];
+    const newSizeSheet = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
+      if(r+1 <= sheet.length && c+1 <= sheet[0].length){
+        return sheet[r][c];
+      };
+    }));
+    setSheet(newSizeSheet);
+    const newStudentArrangement = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
+      const index = searchValue(studentList, {id: newSizeSheet[r][c]});
+      if(index > -1){
+        return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
+      }else{
+        return {gcn: "", name: "", kana: ""}
+      }
+    }));
+    setStudentArrangement(newStudentArrangement);
+  };
+
+  // props: selectText, moveFocus, sheet, changeValue
   return (
     <>
       <div style={{height: "50px"}}>
@@ -156,7 +180,7 @@ const App = () => {
         <div style={{display: "inline-block", "margin-left": "20px"}}>
           <div style={{display: "inline-block"}}>レイアウト</div>
           <div style={{display: "inline-block", "margin-left": "5px"}}>前後</div>
-          <select style={{width: "50px", "margin-left": "5px"}}>
+          <select id="row" style={{width: "50px", "margin-left": "5px"}}>
             <option value="4">4席</option>
             <option value="5" selected>5席</option>
             <option value="6">6席</option>
@@ -164,7 +188,7 @@ const App = () => {
             <option value="8">8席</option>
           </select>
           <div style={{display: "inline-block", "margin-left": "5px"}}>× 左右</div>
-          <select style={{width: "50px", "margin-left": "5px"}}>
+          <select id="column" style={{width: "50px", "margin-left": "5px"}}>
             <option value="4">4席</option>
             <option value="5">5席</option>
             <option value="6" selected>6席</option>
@@ -173,7 +197,7 @@ const App = () => {
           </select>
         </div>
         <div style={{display: "inline-block", "margin-left": "20px"}}>
-          <button>新規作成</button>
+          <button onClick={clickNewButton}>新規作成</button>
         </div>
 
         <br></br>
@@ -210,8 +234,6 @@ const App = () => {
       <div style={{display: "table"}}>
         <div style={{display: "table-cell", "padding-right": "30px", "vertical-align": "top"}}>
           <SheetTable 
-            rowIndex={rowIndex}
-            columnIndex={columnIndex}
             sheet={sheet}
             selectText={selectText}
             moveFocus={moveFocus}
@@ -222,7 +244,10 @@ const App = () => {
           />
         </div>
         <div style={{display: "table-cell", "vertical-align": "top"}}>
-          <table>
+          <StudentArrangement
+            studentArrangement={studentArrangement}
+          />
+          {/* <table>
             <tbody>
               {rowIndex.map((r,rowKey)=>{
                 return(
@@ -242,7 +267,7 @@ const App = () => {
                 )
               })}
             </tbody>
-          </table>
+          </table> */}
         </div>
       </div>
     </>

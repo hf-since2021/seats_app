@@ -1,14 +1,18 @@
 const SheetTable = (props) => {
-  // props: rowIndex, columnIndex, selectText, moveFocus, sheet, changeValue
+  // props: selectText, moveFocus, sheet, changeValue
+  const tableSize = [props.sheet.length, props.sheet[0].length];
+  const rowIndex    = [...Array(tableSize[0]).keys()];
+  const columnIndex = [...Array(tableSize[1]).keys()];
+
   return (
     <>
       <p>Ctrl (⌘) ＋ ←↑↓→</p>
       <table className="sheet-table">
         <tbody>
-          {props.rowIndex.map((r,rowKey)=>{
+          {rowIndex.map((r,rowKey)=>{
             return(
               <tr key={rowKey}>
-                {props.columnIndex.map((c,colKey)=>{
+                {columnIndex.map((c,colKey)=>{
                   return(
                     <td key={colKey}>
                       <input id={`${r}-${c}`} 
