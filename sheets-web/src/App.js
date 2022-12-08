@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import NameList from "./components/NameList";
 import SheetTable from "./components/SheetTable"
 import StudentArrangement from "./components/StudentArrangement"
@@ -78,35 +78,86 @@ const App = () => {
 
   // ctrl or cmd + arrow keys でセル移動
   const moveFocus = (e) => {
-    const cellId = e.target.id.split("-").map(Number);
+    // const cellId = e.target.id.split("-").map(Number);
+    // if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
+    //   switch (e.nativeEvent.key) {
+    //     case "ArrowUp":
+    //       if(cellId[0]>0){
+    //         e.preventDefault();
+    //         cellId[0] --;
+    //         document.getElementById(cellId.join("-")).focus();
+    //       };
+    //       break;
+    //     case "ArrowLeft":
+    //       if(cellId[1]>0){
+    //         e.preventDefault();
+    //         cellId[1] --;
+    //         document.getElementById(cellId.join("-")).focus();
+    //       };
+    //       break;
+    //     case "ArrowDown":
+    //       if(cellId[0]<tableSize[0]-1){
+    //         e.preventDefault();
+    //         cellId[0] ++;
+    //         document.getElementById(cellId.join("-")).focus();
+    //       };
+    //       break;
+    //     case "ArrowRight":
+    //       if(cellId[1]<tableSize[1]-1){
+    //         e.preventDefault();
+    //         cellId[1] ++;
+    //         document.getElementById(cellId.join("-")).focus();
+    //       };
+    //       break;
+    //   };
+    // };
+
     if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
+
+      let activeRow;
+      let activeColumn;
+      const tableRow = sheet.length;
+      const tableColumn = sheet[0].length;
+      const target = e.target;
+
+      // アクティブセルのrefのindexを検索...頭のいいやり方ではなさそう。
+      for(let i=0; i<tableRow; i++){
+        for(let j=0; j<tableColumn; j++){
+          if(target == inputElement.current[i][j]){
+            activeRow = i;
+            activeColumn = j;
+            break;
+          };
+        };
+      };
+  
       switch (e.nativeEvent.key) {
         case "ArrowUp":
-          if(cellId[0]>0){
+          if(activeRow>0){
             e.preventDefault();
-            cellId[0] --;
-            document.getElementById(cellId.join("-")).focus();
+            activeRow --;
+            inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowLeft":
-          if(cellId[1]>0){
+          if(activeColumn>0){
             e.preventDefault();
-            cellId[1] --;
-            document.getElementById(cellId.join("-")).focus();
+            activeColumn --;
+            inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowDown":
-          if(cellId[0]<tableSize[0]-1){
+          if(activeRow<tableRow-1){
             e.preventDefault();
-            cellId[0] ++;
-            document.getElementById(cellId.join("-")).focus();
+            activeRow ++;
+            inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowRight":
-          if(cellId[1]<tableSize[1]-1){
+          if(activeColumn<tableColumn-1){
             e.preventDefault();
-            cellId[1] ++;
-            document.getElementById(cellId.join("-")).focus();
+            activeColumn ++;
+            inputElement.current[activeRow][activeColumn].focus();
           };
           break;
       };
@@ -149,7 +200,10 @@ const App = () => {
       }
     }));
     setStudentArrangement(newStudentArrangement);
+    console.log(inputElement.current)
   };
+
+  const inputElement = useRef(null);
 
   // props: selectText, moveFocus, sheet, changeValue
   return (
@@ -235,6 +289,7 @@ const App = () => {
         <div style={{display: "table-cell", "padding-right": "30px", "vertical-align": "top"}}>
           <SheetTable 
             sheet={sheet}
+            inputElement={inputElement}
             selectText={selectText}
             moveFocus={moveFocus}
             changeValue={changeValue}

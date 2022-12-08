@@ -4,6 +4,9 @@ const SheetTable = (props) => {
   const rowIndex    = [...Array(tableSize[0]).keys()];
   const columnIndex = [...Array(tableSize[1]).keys()];
 
+  const refTable = rowIndex.map(()=>columnIndex.map(()=>{}));
+  props.inputElement.current = refTable;
+
   return (
     <>
       <p>Ctrl (⌘) ＋ ←↑↓→</p>
@@ -15,7 +18,8 @@ const SheetTable = (props) => {
                 {columnIndex.map((c,colKey)=>{
                   return(
                     <td key={colKey}>
-                      <input id={`${r}-${c}`} 
+                      <input /* id={`${r}-${c}`}  */
+                            ref = {(input) => {props.inputElement.current[r][c] = input}}
                             onFocus={props.selectText} 
                             onKeyDown={props.moveFocus} 
                             defaultValue={props.sheet[r][c]}
