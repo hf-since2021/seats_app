@@ -121,16 +121,23 @@ const App = () => {
       const target = e.target;
 
       // アクティブセルのrefのindexを検索...頭のいいやり方ではなさそう。
+      // for(let i=0; i<tableRow; i++){
+      //   for(let j=0; j<tableColumn; j++){
+      //     if(target == inputElement.current[i][j]){
+      //       activeRow = i;
+      //       activeColumn = j;
+      //       break;
+      //     };
+      //   };
+      // };
       for(let i=0; i<tableRow; i++){
-        for(let j=0; j<tableColumn; j++){
-          if(target == inputElement.current[i][j]){
-            activeRow = i;
-            activeColumn = j;
-            break;
-          };
+        if(inputElement.current[i].includes(target)){
+          activeRow = i;
+          activeColumn = inputElement.current[i].indexOf(target);
+          break;
         };
       };
-  
+
       switch (e.nativeEvent.key) {
         case "ArrowUp":
           if(activeRow>0){
@@ -200,9 +207,10 @@ const App = () => {
       }
     }));
     setStudentArrangement(newStudentArrangement);
-    console.log(inputElement.current)
   };
 
+  // アクティブセルの移動関数(moveFocus)で、focus先の要素への参照を格納
+  // SheetTable.jsで、ref.currentに配列を代入して、そこへcallback refで参照を格納
   const inputElement = useRef(null);
 
   // props: selectText, moveFocus, sheet, changeValue
