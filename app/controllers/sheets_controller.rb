@@ -19,6 +19,6 @@ class SheetsController < ApplicationController
         sex:  Sex.find(sb.sex_id).name,
       }
     end
-    render json: { message: 'ok'}
+    render json: { message: 'ok', students: students }
   end
 end

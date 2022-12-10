@@ -7,9 +7,12 @@ const App = () => {
   // state: sheet, studentArrangement
 
   // 座席入力欄の初期化
-  const tableSize = [5,6];
-  const rowIndex    = [...Array(tableSize[0]).keys()];
-  const columnIndex = [...Array(tableSize[1]).keys()];
+  const rowSize    = 5;
+  const columnSize = 6;
+  // const [rowSize, setRowSize] = useState(5);
+  // const [columnSize, setColumnSize] = useState(6);
+  const rowIndex    = [...Array(rowSize).keys()];
+  const columnIndex = [...Array(columnSize).keys()];
   const initialSheet = rowIndex.map(()=>columnIndex.map(()=>{}));
   const [sheet, setSheet] = useState(initialSheet);
 
@@ -76,92 +79,38 @@ const App = () => {
   // セルがアクティブになったときに、全選択する
   const selectText = (e)=>{e.target.select()};
 
-  // ctrl or cmd + arrow keys でセル移動
+  // Ctrl or cmd + arrow keys でセル移動
   const moveFocus = (e) => {
-    // const cellId = e.target.id.split("-").map(Number);
-    // if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
-    //   switch (e.nativeEvent.key) {
-    //     case "ArrowUp":
-    //       if(cellId[0]>0){
-    //         e.preventDefault();
-    //         cellId[0] --;
-    //         document.getElementById(cellId.join("-")).focus();
-    //       };
-    //       break;
-    //     case "ArrowLeft":
-    //       if(cellId[1]>0){
-    //         e.preventDefault();
-    //         cellId[1] --;
-    //         document.getElementById(cellId.join("-")).focus();
-    //       };
-    //       break;
-    //     case "ArrowDown":
-    //       if(cellId[0]<tableSize[0]-1){
-    //         e.preventDefault();
-    //         cellId[0] ++;
-    //         document.getElementById(cellId.join("-")).focus();
-    //       };
-    //       break;
-    //     case "ArrowRight":
-    //       if(cellId[1]<tableSize[1]-1){
-    //         e.preventDefault();
-    //         cellId[1] ++;
-    //         document.getElementById(cellId.join("-")).focus();
-    //       };
-    //       break;
-    //   };
-    // };
-
     if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
-
-      let activeRow;
-      let activeColumn;
-      const tableRow = sheet.length;
-      const tableColumn = sheet[0].length;
-      const target = e.target;
-
-      // アクティブセルのrefのindexを検索...頭のいいやり方ではなさそう。
-      // for(let i=0; i<tableRow; i++){
-      //   for(let j=0; j<tableColumn; j++){
-      //     if(target == inputElement.current[i][j]){
-      //       activeRow = i;
-      //       activeColumn = j;
-      //       break;
-      //     };
-      //   };
-      // };
-      for(let i=0; i<tableRow; i++){
-        if(inputElement.current[i].includes(target)){
-          activeRow = i;
-          activeColumn = inputElement.current[i].indexOf(target);
-          break;
-        };
-      };
-
+      let activeRow = Number(e.target.dataset.row);
+      let activeColumn = Number(e.target.dataset.column);
+      // 方向キー・アクティブセルが端でない
       switch (e.nativeEvent.key) {
         case "ArrowUp":
-          if(activeRow>0){
+          if(activeRow > 0){
             e.preventDefault();
             activeRow --;
             inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowLeft":
-          if(activeColumn>0){
+          if(activeColumn > 0){
             e.preventDefault();
             activeColumn --;
             inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowDown":
-          if(activeRow<tableRow-1){
+          const tableRow = sheet.length;
+          if(activeRow < tableRow-1){
             e.preventDefault();
             activeRow ++;
             inputElement.current[activeRow][activeColumn].focus();
           };
           break;
         case "ArrowRight":
-          if(activeColumn<tableColumn-1){
+          const tableColumn = sheet[0].length;
+          if(activeColumn < tableColumn-1){
             e.preventDefault();
             activeColumn ++;
             inputElement.current[activeRow][activeColumn].focus();
@@ -172,26 +121,30 @@ const App = () => {
   };
 
   const changeValue = (e) => {
-    const cellId = e.target.id.split("-").map(Number);
+    // アクティブセルの位置を取得
+    const activeRow = Number(e.target.dataset.row);
+    const activeColumn = Number(e.target.dataset.column);
+    // 変更部分をstate(sheet)に反映
     const newSheet = [...sheet];
-    newSheet[cellId[0]][cellId[1]] = Number(e.target.value);
+    newSheet[activeRow][activeColumn] = Number(e.target.value);
     setSheet(newSheet);
 
+    // 変更部分をstate(studentArrangement)に反映
     const index = searchValue(studentList, {id: Number(e.target.value)});
     const newStudentArrangement = [...studentArrangement];
     if(index > -1){
-      newStudentArrangement[cellId[0]][cellId[1]] = {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
+      newStudentArrangement[activeRow][activeColumn] = {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
     }else{
-      newStudentArrangement[cellId[0]][cellId[1]] = {gcn: "", name: "", kana: ""}
+      newStudentArrangement[activeRow][activeColumn] = {gcn: "", name: "", kana: ""}
     }
     setStudentArrangement(newStudentArrangement);
-    // console.log(studentArrangement);
   };
 
   const clickNewButton = () => {
-    const newTableSize = [Number(document.getElementById("row").value),Number(document.getElementById("column").value)];
-    const newRowIndex    = [...Array(newTableSize[0]).keys()];
-    const newColumnIndex = [...Array(newTableSize[1]).keys()];
+    const newRowSize    = Number(document.getElementById("row").value);
+    const newColumnSize = Number(document.getElementById("column").value);
+    const newRowIndex    = [...Array(newRowSize).keys()];
+    const newColumnIndex = [...Array(newColumnSize).keys()];
     const newSizeSheet = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
       if(r+1 <= sheet.length && c+1 <= sheet[0].length){
         return sheet[r][c];
@@ -310,27 +263,6 @@ const App = () => {
           <StudentArrangement
             studentArrangement={studentArrangement}
           />
-          {/* <table>
-            <tbody>
-              {rowIndex.map((r,rowKey)=>{
-                return(
-                  <tr key={rowKey}>
-                    {columnIndex.map((c,colKey)=>{
-                      return(
-                        <td key={colKey}>
-                          <div className="arrangement-card">
-                            <div className="gcn" >{studentArrangement[r][c].gcn}</div>
-                            <div className="name">{studentArrangement[r][c].name}</div>
-                            <div className="kana">{studentArrangement[r][c].kana}</div>
-                          </div>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table> */}
         </div>
       </div>
     </>
