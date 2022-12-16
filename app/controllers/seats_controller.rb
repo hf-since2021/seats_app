@@ -1,4 +1,4 @@
-class SheetsController < ApplicationController
+class SeatsController < ApplicationController
   def index
     # session[:user_id] = 1
     # render json: { message: 'ok'}

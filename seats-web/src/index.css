@@ -12,18 +12,18 @@ code {
     monospace;
 }
 
-.sheet-table td {
+.seat-table td {
   text-align: center;
 }
 
-.sheet-table input {
+.seat-table input {
   text-align: center;
   background-color: #DDDDDD;
   width: 20px;
   border: 0;
 }
 
-.sheet-table input:focus {
+.seat-table input:focus {
   background-color: #BBBBBB;
   outline: 0;
 }

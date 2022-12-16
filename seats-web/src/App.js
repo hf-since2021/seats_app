@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import NameList from "./components/NameList";
-import SheetTable from "./components/SheetTable"
+import SeatTable from "./components/SeatTable"
 import StudentArrangement from "./components/StudentArrangement"
 
 const App = () => {
-  // state: sheet, studentArrangement
+  // state: seat, studentArrangement
 
   // 座席入力欄の初期化
   const rowSize    = 5;
@@ -13,8 +13,13 @@ const App = () => {
   // const [columnSize, setColumnSize] = useState(6);
   const rowIndex    = [...Array(rowSize).keys()];
   const columnIndex = [...Array(columnSize).keys()];
-  const initialSheet = rowIndex.map(()=>columnIndex.map(()=>{}));
-  const [sheet, setSheet] = useState(initialSheet);
+  const initialSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
+  const [seat, setSeat] = useState(initialSeat);
+
+  // アクティブセルの移動関数(moveFocus)で、focus先の要素への参照を格納
+  // SeatTable.jsで、ref.currentに配列を代入して、そこへcallback refで参照を格納
+  const refTable = rowIndex.map(()=>columnIndex.map(()=>{}));
+  const inputElement = useRef(refTable);
 
   // 生徒情報、APIで取得予定
   const studentList = [
@@ -31,7 +36,7 @@ const App = () => {
   ];
 
   // 生徒情報取得リクエスト（未完成）
-  const studentListURL = "http://localhost:3010/api/sheets/namelist";
+  const studentListURL = "http://localhost:3010/api/seats/namelist";
   const params = {
     a: "xxx",
     b: "yyy",
@@ -67,7 +72,7 @@ const App = () => {
 
   // 座席の配置に表示する情報
   const initialStudentArrangement = rowIndex.map((r)=>columnIndex.map((c)=>{
-    const index = searchValue(studentList, {id: initialSheet[r][c]});
+    const index = searchValue(studentList, {id: initialSeat[r][c]});
     if(index > -1){
       return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
     }else{
@@ -101,7 +106,7 @@ const App = () => {
           };
           break;
         case "ArrowDown":
-          const tableRow = sheet.length;
+          const tableRow = seat.length;
           if(activeRow < tableRow-1){
             e.preventDefault();
             activeRow ++;
@@ -109,7 +114,7 @@ const App = () => {
           };
           break;
         case "ArrowRight":
-          const tableColumn = sheet[0].length;
+          const tableColumn = seat[0].length;
           if(activeColumn < tableColumn-1){
             e.preventDefault();
             activeColumn ++;
@@ -124,10 +129,10 @@ const App = () => {
     // アクティブセルの位置を取得
     const activeRow = Number(e.target.dataset.row);
     const activeColumn = Number(e.target.dataset.column);
-    // 変更部分をstate(sheet)に反映
-    const newSheet = [...sheet];
-    newSheet[activeRow][activeColumn] = Number(e.target.value);
-    setSheet(newSheet);
+    // 変更部分をstate(seat)に反映
+    const newSeat = [...seat];
+    newSeat[activeRow][activeColumn] = Number(e.target.value);
+    setSeat(newSeat);
 
     // 変更部分をstate(studentArrangement)に反映
     const index = searchValue(studentList, {id: Number(e.target.value)});
@@ -145,14 +150,14 @@ const App = () => {
     const newColumnSize = Number(document.getElementById("column").value);
     const newRowIndex    = [...Array(newRowSize).keys()];
     const newColumnIndex = [...Array(newColumnSize).keys()];
-    const newSizeSheet = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
-      if(r+1 <= sheet.length && c+1 <= sheet[0].length){
-        return sheet[r][c];
+    const newSizeSeat = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
+      if(r+1 <= seat.length && c+1 <= seat[0].length){
+        return seat[r][c];
       };
     }));
-    setSheet(newSizeSheet);
+    setSeat(newSizeSeat);
     const newStudentArrangement = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
-      const index = searchValue(studentList, {id: newSizeSheet[r][c]});
+      const index = searchValue(studentList, {id: newSizeSeat[r][c]});
       if(index > -1){
         return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
       }else{
@@ -162,27 +167,46 @@ const App = () => {
     setStudentArrangement(newStudentArrangement);
   };
 
-  const submitNewSheet = (e) => {
+  const submitNewSeat = (e) => {
+    // 送信しない
     e.preventDefault();
-    console.log(e.target);
-    console.log(e.currentTarget);
-    // const formData = new FormData(e.currentTarget);
     const formData = new FormData(e.target);
-    console.log(formData);
     console.log(formData.get("list-type"));
     console.log(formData.get("klass-select"));
     console.log(formData.get("lesson-select"));
-  }
 
-  // アクティブセルの移動関数(moveFocus)で、focus先の要素への参照を格納
-  // SheetTable.jsで、ref.currentに配列を代入して、そこへcallback refで参照を格納
-  const inputElement = useRef(null);
+    // 入力表のサイズを更新
+    const newRowSize    = Number(formData.get("row"));
+    const newColumnSize = Number(formData.get("column"));
+    const newRowIndex    = [...Array(newRowSize).keys()];
+    const newColumnIndex = [...Array(newColumnSize).keys()];
+    const newSizeSeat = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
+      if(r+1 <= seat.length && c+1 <= seat[0].length){
+        return seat[r][c];
+      };
+    }));
+    // console.log(newSizeSeat);
+    setSeat(newSizeSeat);
+    // const newRefTable = rowIndex.map(()=>columnIndex.map(()=>{}));
+    // const inputElement = useRef(refTable);
 
-  // props: selectText, moveFocus, sheet, changeValue
+    // 座席表のサイズを更新
+    const newStudentArrangement = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
+      const index = searchValue(studentList, {id: newSizeSeat[r][c]});
+      if(index > -1){
+        return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
+      }else{
+        return {gcn: "", name: "", kana: ""}
+      }
+    }));
+    // setStudentArrangement(newStudentArrangement);
+  };
+
+  // props: selectText, moveFocus, seat, changeValue
   return (
     <>
       <div style={{"margin-bottom": "20px"}}>
-        <form onSubmit={submitNewSheet}>
+        <form onSubmit={submitNewSeat}>
           <div style={{display: "inline-block"}}>
             <input type="radio" name="list-type" value="klass" />
             <div style={{display: "inline-block"}}>学級</div>
@@ -208,7 +232,7 @@ const App = () => {
           <div style={{display: "inline-block", "margin-left": "20px"}}>
             <div style={{display: "inline-block"}}>レイアウト</div>
             <div style={{display: "inline-block", "margin-left": "5px"}}>前後</div>
-            <select id="row" style={{width: "50px", "margin-left": "5px"}}>
+            <select name="row" style={{width: "50px", "margin-left": "5px"}}>
               <option value="4">4席</option>
               <option value="5" selected>5席</option>
               <option value="6">6席</option>
@@ -216,7 +240,7 @@ const App = () => {
               <option value="8">8席</option>
             </select>
             <div style={{display: "inline-block", "margin-left": "5px"}}>× 左右</div>
-            <select id="column" style={{width: "50px", "margin-left": "5px"}}>
+            <select name="column" style={{width: "50px", "margin-left": "5px"}}>
               <option value="4">4席</option>
               <option value="5">5席</option>
               <option value="6" selected>6席</option>
@@ -263,8 +287,8 @@ const App = () => {
 
       <div style={{display: "table"}}>
         <div style={{display: "table-cell", "padding-right": "30px", "vertical-align": "top"}}>
-          <SheetTable 
-            sheet={sheet}
+          <SeatTable 
+            seat={seat}
             inputElement={inputElement}
             selectText={selectText}
             moveFocus={moveFocus}
