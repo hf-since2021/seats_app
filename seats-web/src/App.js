@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect, useRef } from "react";
 import ConfigForm from "./components/ConfigForm";
 import NameList from "./components/NameList";
 import SeatTable from "./components/SeatTable"
 import StudentArrangement from "./components/StudentArrangement"
+// import { moveFocus } from "./utils/focusFunctions"
 
 const App = () => {
   // state: seat, studentArrangement
@@ -16,10 +18,6 @@ const App = () => {
   const columnIndex = [...Array(columnSize).keys()];
   const initialSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
   const [seat, setSeat] = useState(initialSeat);
-
-  // アクティブセルの移動関数(moveFocus)で、focus先の要素への参照を格納
-  // SeatTable.jsで、ref.currentに配列を代入して、そこへcallback refで参照を格納
-  const inputElement = useRef(new Map());
 
   // 生徒情報、APIで取得予定
   const studentList = [
@@ -79,52 +77,8 @@ const App = () => {
       return {gcn: "", name: "", kana: ""}
     }
   }));
+
   const [studentArrangement, setStudentArrangement] = useState(initialStudentArrangement);
-
-  // セルがアクティブになったときに、全選択する
-  const selectText = (e)=>{e.target.select()};
-
-  // Ctrl or cmd + arrow keys でセル移動
-  const moveFocus = (e) => {
-    if((e.ctrlKey && !e.metaKey) || (!e.ctrlKey && e.metaKey)){
-      let activeRow = Number(e.target.dataset.row);
-      let activeColumn = Number(e.target.dataset.column);
-      // 方向キー・アクティブセルが端でない
-      // preventDefault()とfocus()はbreak後に実行するとctrl(meta)＋別キー押下でエラーになる。
-      switch (e.nativeEvent.key) {
-        case "ArrowUp":
-          if(activeRow > 0){
-            e.preventDefault();
-            activeRow --;
-            inputElement.current.get(activeRow).get(activeColumn).focus();
-          };
-          break;
-        case "ArrowLeft":
-          if(activeColumn > 0){
-            e.preventDefault();
-            activeColumn --;
-            inputElement.current.get(activeRow).get(activeColumn).focus();
-          };
-          break;
-        case "ArrowDown":
-          const tableRow = seat.length;
-          if(activeRow < tableRow-1){
-            e.preventDefault();
-            activeRow ++;
-            inputElement.current.get(activeRow).get(activeColumn).focus();
-          };
-          break;
-        case "ArrowRight":
-          const tableColumn = seat[0].length;
-          if(activeColumn < tableColumn-1){
-            e.preventDefault();
-            activeColumn ++;
-            inputElement.current.get(activeRow).get(activeColumn).focus();
-          };
-          break;
-      };
-    };
-  };
 
   const changeValue = (e) => {
     // アクティブセルの位置を取得
@@ -143,28 +97,6 @@ const App = () => {
     }else{
       newStudentArrangement[activeRow][activeColumn] = {gcn: "", name: "", kana: ""}
     }
-    setStudentArrangement(newStudentArrangement);
-  };
-
-  const clickNewButton = () => {
-    const newRowSize    = Number(document.getElementById("row").value);
-    const newColumnSize = Number(document.getElementById("column").value);
-    const newRowIndex    = [...Array(newRowSize).keys()];
-    const newColumnIndex = [...Array(newColumnSize).keys()];
-    const newSizeSeat = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
-      if(r+1 <= seat.length && c+1 <= seat[0].length){
-        return seat[r][c];
-      };
-    }));
-    setSeat(newSizeSeat);
-    const newStudentArrangement = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
-      const index = searchValue(studentList, {id: newSizeSeat[r][c]});
-      if(index > -1){
-        return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
-      }else{
-        return {gcn: "", name: "", kana: ""}
-      }
-    }));
     setStudentArrangement(newStudentArrangement);
   };
 
@@ -242,9 +174,7 @@ const App = () => {
         <div style={{display: "table-cell", "padding-right": "30px", "vertical-align": "top"}}>
           <SeatTable 
             seat={seat}
-            inputElement={inputElement}
-            selectText={selectText}
-            moveFocus={moveFocus}
+            // selectText={selectText}
             changeValue={changeValue}
           />
           <NameList
