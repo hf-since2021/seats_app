@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ConfigForm from "./components/ConfigForm";
 import NameList from "./components/NameList";
 import SeatTable from "./components/SeatTable"
 import StudentArrangement from "./components/StudentArrangement"
@@ -18,8 +19,7 @@ const App = () => {
 
   // アクティブセルの移動関数(moveFocus)で、focus先の要素への参照を格納
   // SeatTable.jsで、ref.currentに配列を代入して、そこへcallback refで参照を格納
-  const refTable = rowIndex.map(()=>columnIndex.map(()=>{}));
-  const inputElement = useRef(refTable);
+  const inputElement = useRef(new Map());
 
   // 生徒情報、APIで取得予定
   const studentList = [
@@ -90,19 +90,20 @@ const App = () => {
       let activeRow = Number(e.target.dataset.row);
       let activeColumn = Number(e.target.dataset.column);
       // 方向キー・アクティブセルが端でない
+      // preventDefault()とfocus()はbreak後に実行するとctrl(meta)＋別キー押下でエラーになる。
       switch (e.nativeEvent.key) {
         case "ArrowUp":
           if(activeRow > 0){
             e.preventDefault();
             activeRow --;
-            inputElement.current[activeRow][activeColumn].focus();
+            inputElement.current.get(activeRow).get(activeColumn).focus();
           };
           break;
         case "ArrowLeft":
           if(activeColumn > 0){
             e.preventDefault();
             activeColumn --;
-            inputElement.current[activeRow][activeColumn].focus();
+            inputElement.current.get(activeRow).get(activeColumn).focus();
           };
           break;
         case "ArrowDown":
@@ -110,7 +111,7 @@ const App = () => {
           if(activeRow < tableRow-1){
             e.preventDefault();
             activeRow ++;
-            inputElement.current[activeRow][activeColumn].focus();
+            inputElement.current.get(activeRow).get(activeColumn).focus();
           };
           break;
         case "ArrowRight":
@@ -118,7 +119,7 @@ const App = () => {
           if(activeColumn < tableColumn-1){
             e.preventDefault();
             activeColumn ++;
-            inputElement.current[activeRow][activeColumn].focus();
+            inputElement.current.get(activeRow).get(activeColumn).focus();
           };
           break;
       };
@@ -175,20 +176,18 @@ const App = () => {
     console.log(formData.get("klass-select"));
     console.log(formData.get("lesson-select"));
 
-    // 入力表のサイズを更新
     const newRowSize    = Number(formData.get("row"));
     const newColumnSize = Number(formData.get("column"));
     const newRowIndex    = [...Array(newRowSize).keys()];
     const newColumnIndex = [...Array(newColumnSize).keys()];
+
+    // 入力表のサイズを更新
     const newSizeSeat = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
       if(r+1 <= seat.length && c+1 <= seat[0].length){
         return seat[r][c];
       };
     }));
-    // console.log(newSizeSeat);
     setSeat(newSizeSeat);
-    // const newRefTable = rowIndex.map(()=>columnIndex.map(()=>{}));
-    // const inputElement = useRef(refTable);
 
     // 座席表のサイズを更新
     const newStudentArrangement = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
@@ -199,62 +198,16 @@ const App = () => {
         return {gcn: "", name: "", kana: ""}
       }
     }));
-    // setStudentArrangement(newStudentArrangement);
+    setStudentArrangement(newStudentArrangement);
   };
 
   // props: selectText, moveFocus, seat, changeValue
   return (
     <>
       <div style={{"margin-bottom": "20px"}}>
-        <form onSubmit={submitNewSeat}>
-          <div style={{display: "inline-block"}}>
-            <input type="radio" name="list-type" value="klass" />
-            <div style={{display: "inline-block"}}>学級</div>
-            <select name="klass-select" style={{width: "40px", "margin-left": "10px"}}>
-              <option value="1">---</option>
-              <option value="2">1A</option>
-              <option value="3">1B</option>
-              <option value="4">1C</option>
-              <option value="5">1D</option>
-            </select>
-          </div>
-          <div style={{display: "inline-block", "margin-left": "20px"}}>
-            <input type="radio" name="list-type" value="lesson" />
-            <div style={{display: "inline-block"}}>授業</div>
-            <select name="lesson-select" style={{width: "100px", "margin-left": "10px"}}>
-              <option value="1">--------</option>
-              <option value="2">1A-国語</option>
-              <option value="3">1B-国語</option>
-              <option value="4">1C-国語</option>
-              <option value="5">1D-国語</option>
-            </select>
-          </div>
-          <div style={{display: "inline-block", "margin-left": "20px"}}>
-            <div style={{display: "inline-block"}}>レイアウト</div>
-            <div style={{display: "inline-block", "margin-left": "5px"}}>前後</div>
-            <select name="row" style={{width: "50px", "margin-left": "5px"}}>
-              <option value="4">4席</option>
-              <option value="5" selected>5席</option>
-              <option value="6">6席</option>
-              <option value="7">7席</option>
-              <option value="8">8席</option>
-            </select>
-            <div style={{display: "inline-block", "margin-left": "5px"}}>× 左右</div>
-            <select name="column" style={{width: "50px", "margin-left": "5px"}}>
-              <option value="4">4席</option>
-              <option value="5">5席</option>
-              <option value="6" selected>6席</option>
-              <option value="7">7席</option>
-              <option value="8">8席</option>
-            </select>
-          </div>
-          <div style={{display: "inline-block", "margin-left": "20px"}}>
-            {/* <button onClick={clickNewButton}>新規作成</button> */}
-            <input type="submit" value="新規作成" />
-          </div>
-        </form>
+        <ConfigForm submitNewSeat={submitNewSeat} />
 
-        <br></br>
+        <br />
 
         <div style={{display: "inline-block"}}>
           (あなた)の座席表
