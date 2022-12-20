@@ -1,8 +1,15 @@
+import React, { useState } from "react";
+
 const ConfigForm = (props) => {
+  const [listType, setListType] = useState("");
+  const changeListType = (e) => {
+    setListType(e.target.value);
+  };
+
   return(
     <form onSubmit={props.submitNewSeat}>
       <div style={{display: "inline-block"}}>
-        <input type="radio" name="list-type" value="klass" />
+        <input type="radio" name="list-type" value="klass" checked={listType == "klass"} onChange={changeListType} />
         <div style={{display: "inline-block"}}>学級</div>
         <select name="klass-select" style={{width: "40px", "margin-left": "10px"}}>
           <option value="1">---</option>
@@ -13,7 +20,7 @@ const ConfigForm = (props) => {
         </select>
       </div>
       <div style={{display: "inline-block", "margin-left": "20px"}}>
-        <input type="radio" name="list-type" value="lesson" />
+        <input type="radio" name="list-type" value="lesson" checked={listType == "lesson"} onChange={changeListType} />
         <div style={{display: "inline-block"}}>授業</div>
         <select name="lesson-select" style={{width: "100px", "margin-left": "10px"}}>
           <option value="1">--------</option>

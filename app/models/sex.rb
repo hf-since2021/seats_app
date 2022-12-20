@@ -6,6 +6,6 @@ class Sex < ActiveHash::Base
     { id: 4, name: '*' },
   ]
 
-  include ActiveHash::Associations
-  has_many :students
+  # include ActiveHash::Associations
+  # has_many :students
 end

@@ -7,6 +7,6 @@ class Year < ActiveHash::Base
     { id: 5, name: '2023' },
   ]
 
-  include ActiveHash::Associations
-  has_many :annual_students
+  # include ActiveHash::Associations
+  # has_many :annual_students
 end

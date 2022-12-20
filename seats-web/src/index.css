@@ -43,10 +43,11 @@ code {
 }
 
 .arrangement-card {
+  font-size: 11pt;
   background-color: #DDDDDD;
   margin: 0 10px 10px 0;
   width: 100px;
-  height: 120px;
+  height: 90px;
   position: relative;
 }
 
@@ -65,6 +66,6 @@ code {
 .arrangement-card > div {
   margin: 0;
   padding: 0 5px;
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
 }

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-// import React, { useState, useEffect, useRef } from "react";
 import ConfigForm from "./components/ConfigForm";
 import NameList from "./components/NameList";
 import SeatTable from "./components/SeatTable"
 import StudentArrangement from "./components/StudentArrangement"
-// import { moveFocus } from "./utils/focusFunctions"
 
 const App = () => {
   // state: seat, studentArrangement
@@ -12,8 +10,6 @@ const App = () => {
   // 座席入力欄の初期化
   const rowSize    = 5;
   const columnSize = 6;
-  // const [rowSize, setRowSize] = useState(5);
-  // const [columnSize, setColumnSize] = useState(6);
   const rowIndex    = [...Array(rowSize).keys()];
   const columnIndex = [...Array(columnSize).keys()];
   const initialSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
@@ -87,7 +83,7 @@ const App = () => {
     // 変更部分をstate(seat)に反映
     const newSeat = [...seat];
     newSeat[activeRow][activeColumn] = Number(e.target.value);
-    setSeat(newSeat);
+    setSeat(() => newSeat);
 
     // 変更部分をstate(studentArrangement)に反映
     const index = searchValue(studentList, {id: Number(e.target.value)});
@@ -104,9 +100,9 @@ const App = () => {
     // 送信しない
     e.preventDefault();
     const formData = new FormData(e.target);
-    console.log(formData.get("list-type"));
-    console.log(formData.get("klass-select"));
-    console.log(formData.get("lesson-select"));
+    // console.log(formData.get("list-type"));
+    // console.log(formData.get("klass-select"));
+    // console.log(formData.get("lesson-select"));
 
     const newRowSize    = Number(formData.get("row"));
     const newColumnSize = Number(formData.get("column"));
