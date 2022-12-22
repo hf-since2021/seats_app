@@ -4,6 +4,8 @@ Rails.application.routes.draw do
     resources :seats, only: [:index] do
       collection do
         get "namelist"
+        post "arrangement"
+        get "arrangement_load"
       end
     end
   end

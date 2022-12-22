@@ -1,0 +1,2 @@
+class Constent < ApplicationRecord
+end

@@ -22,4 +22,17 @@ class SeatsController < ApplicationController
     # render json: { message: 'ok', students: students }
     render json: { message: 'ok'}
   end
+
+  def arrangement
+    # JSON.parse(params.require(:「ペイロードの変数名」))
+    # ↑をやるとRubyで処理のできるデータ型（今回だと配列）に変換できる。
+    # バリデーションをかけたりするなら必要な処理。
+    Constent.create(arrangement: params.require(:postData))
+    render json: { message: 'post ok'}
+  end
+
+  def arrangement_load
+    data = Constent.last
+    render json: { message: 'get ok', data: data }
+  end
 end

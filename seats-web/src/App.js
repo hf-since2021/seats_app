@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import ConfigForm from "./components/ConfigForm";
 import NameList from "./components/NameList";
 import SeatTable from "./components/SeatTable"
@@ -29,34 +30,47 @@ const App = () => {
     {id:10, gcn:"2A10", name:"今野 一樹", kana:"ｺﾝﾉ ﾋﾄｷ", sex:"男"}
   ];
 
-  // 生徒情報取得リクエスト（未完成）
-  const studentListURL = "http://localhost:3010/api/seats/namelist";
-  const params = {
-    a: "xxx",
-    b: "yyy",
-    c: "zzz",
-  }
-  const query_params = new URLSearchParams(params); 
-  // const getStudentList = (url, postData) => {
-  const getStudentList = (url) => {
-    return new Promise((resolve, reject) => {
-      // 
-      fetch(url , {
-        method: "GET",
-        // headers: { "Content-Type": "application/json" },
-        // body: JSON.stringify(postData)
-      }).then((res) => resolve(res.json()));
-    })
-  }
+  // // 生徒情報取得リクエスト（未完成）
+  // const studentListURL = "http://localhost:3010/api/seats/namelist";
+  // const params = {
+  //   a: "xxx",
+  //   b: "yyy",
+  //   c: "zzz",
+  // }
+  // const query_params = new URLSearchParams(params); 
+  // // const getStudentList = (url, postData) => {
+  // const getStudentList = (url) => {
+  //   return new Promise((resolve, reject) => {
+  //     // 
+  //     fetch(url , {
+  //       method: "GET",
+  //       // headers: { "Content-Type": "application/json" },
+  //       // body: JSON.stringify(postData)
+  //     }).then((res) => resolve(res.json()));
+  //   })
+  // }
 
-  useEffect(() => {
-    const getStudentData = async () => {
-      // const res = await getStudentList(studentListURL, data);
-      const res = await getStudentList(`${studentListURL}?${query_params}`);
-      console.log(res);
-    };
-    getStudentData();
-  }, []);
+  // useEffect(() => {
+  //   const getStudentData = async () => {
+  //     // const res = await getStudentList(studentListURL, data);
+  //     const res = await getStudentList(`${studentListURL}?${query_params}`);
+  //     console.log(res);
+  //   };
+  //   getStudentData();
+  // }, []);
+
+  const postURL = "http://localhost:3010/api/seats/arrangement";
+  const dataPost = () => {
+    const postData = JSON.stringify(seat);
+    axios.post(postURL, {postData})
+      .then((response) => console.log(response));
+  };
+
+  const getURL = "http://localhost:3010/api/seats/arrangement_load";
+  const dataGet = () => {
+    axios.get(getURL)
+      .then((response) => console.log(JSON.parse(response.data.data.arrangement)));
+  };
 
   // arr（json配列）からsearchObj（key+value）を探してインデックスを返す
   const searchValue = (arr, searchObj) => {
@@ -90,7 +104,7 @@ const App = () => {
     const newStudentArrangement = [...studentArrangement];
     if(index > -1){
       newStudentArrangement[activeRow][activeColumn] = {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
-    }else{
+    } else {
       newStudentArrangement[activeRow][activeColumn] = {gcn: "", name: "", kana: ""}
     }
     setStudentArrangement(newStudentArrangement);
@@ -111,9 +125,7 @@ const App = () => {
 
     // 入力表のサイズを更新
     const newSizeSeat = newRowIndex.map((r)=>newColumnIndex.map((c)=>{
-      if(r+1 <= seat.length && c+1 <= seat[0].length){
-        return seat[r][c];
-      };
+      if(r+1 <= seat.length && c+1 <= seat[0].length) return seat[r][c];
     }));
     setSeat(newSizeSeat);
 
@@ -173,6 +185,10 @@ const App = () => {
             // selectText={selectText}
             changeValue={changeValue}
           />
+          <div>
+            <button onClick={dataPost} >送信</button>
+            <button onClick={dataGet} >取得</button>
+          </div>
           <NameList
             studentList={studentList}
           />
