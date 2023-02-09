@@ -1,6 +1,13 @@
 import { useRef } from "react";
 
+// 入力行列欄でフォーカス移動機能を実装するためのRef。SeatTable.jsで使う（というかそこから切り出してきた）
+// 参考URL:https://qiita.com/chelproc/items/de83a6f2959490109b49「フォーカス管理の Custom Hook」
+// input要素に与えるべき属性を一括（スプレッド構文で展開するだけ）で付与できる。
+// 具体的には、「位置」を表すカスタムデータ(row, column)、onKeyDown属性に渡すコールバック関数、ref属性に渡すRefオブジェクト
+// カスタムデータは、onKeyDownでフォーカスを移動させるときに、現在位置が入力欄の端（移動できない）かどうかを判定するのに使用。
+
 export const useFocusControl = (rowSize, columnSize) => {
+  // refオブジェクトを初期化。連想配列を格納。
   const ref = useRef(new Map());
   return (r, c) => ({
     "data-row": r,
@@ -42,9 +49,12 @@ export const useFocusControl = (rowSize, columnSize) => {
         };
       };
     },
+    // ref属性に渡すコールバックref()
     ref(element){
+      // refのキーにr(行)がなかったら、新しい連想配列(行)を付け加える。
       if(![...ref.current.keys()].includes(r)) ref.current.set(r, new Map());
       if(ref){
+        // refのr行c列目として、html要素を追加
         ref.current.get(r).set(c, element);
       } else {
         ref.current.get(r).delete(c);
