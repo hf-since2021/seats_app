@@ -141,6 +141,48 @@ const App = () => {
     setStudentArrangement(newStudentArrangement);
   };
 
+  const autoInput = () => {
+    console.log(seat.length);
+    console.log(seat[0].length);
+    const inputOrder = {
+      1:[4,0,1],
+      2:[3,0,7],
+      3:[2,0,13],
+      4:[1,0,19],
+      5:[0,0,25],
+      6:[4,1,2],
+      7:[3,1,8],
+      8:[2,1,14],
+      9:[1,1,20],
+      10:[0,1,26],
+      11:[4,2,3],
+      12:[3,2,9],
+      13:[2,2,15],
+      14:[1,2,21],
+      15:[0,2,27],
+      16:[4,3,4],
+      17:[3,3,10],
+      18:[2,3,16],
+      19:[1,3,22],
+      20:[0,3,28],
+      21:[4,4,5],
+      22:[3,4,11],
+      23:[2,4,17],
+      24:[1,4,23],
+      25:[0,4,29],
+      26:[4,5,6],
+      27:[3,5,12],
+      28:[2,5,18],
+      29:[1,5,24],
+      30:[0,5,30]
+    };
+    console.log(inputOrder)
+
+    for(let i=1;i<=30;i++){
+      console.log(inputOrder[i][2] <= 10);
+    };
+  };
+
   // props: selectText, moveFocus, seat, changeValue
   return (
     <>
@@ -188,6 +230,7 @@ const App = () => {
           <div>
             <button onClick={dataPost} >送信</button>
             <button onClick={dataGet} >取得</button>
+            <button onClick={autoInput} >自動入力</button>
           </div>
           <NameList
             studentList={studentList}
