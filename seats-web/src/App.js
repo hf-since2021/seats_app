@@ -176,17 +176,31 @@ const App = () => {
       29:[1,5,24],
       30:[0,5,30]
     };
-    console.log(inputOrder)
-
-    for(let i=1;i<=30;i++){
-      console.log(inputOrder[i][2] <= 10);
-    };
 
     const rowSize1    = 5;
     const columnSize1 = 6;
-    const rowIndex1    = [...Array(rowSize).keys()];
-    const columnIndex1 = [...Array(columnSize).keys()];
-    const autoInputSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
+    const rowIndex1    = [...Array(rowSize1).keys()];
+    const columnIndex1 = [...Array(columnSize1).keys()];
+    const autoInputSeat = rowIndex1.map(()=>columnIndex1.map(()=>{}));
+
+    const studentNumber = studentList.length;
+    for(let i=1;i<=30;i++){
+      if(inputOrder[i][2]<=studentNumber){
+        autoInputSeat[inputOrder[i][0]][inputOrder[i][1]] = inputOrder[i][2];
+      } else {
+        autoInputSeat[inputOrder[i][0]][inputOrder[i][1]] = "";
+      }
+    };
+    setSeat(autoInputSeat);
+  };
+
+  const allDelete = () => {
+    const rowSize1    = seat.length;
+    const columnSize1 = seat[0].length;
+    const rowIndex1    = [...Array(rowSize1).keys()];
+    const columnIndex1 = [...Array(columnSize1).keys()];
+    const deletedSeat = rowIndex1.map(()=>columnIndex1.map(()=>{}));
+    setSeat(deletedSeat);
   };
 
   // props: selectText, moveFocus, seat, changeValue
@@ -238,7 +252,7 @@ const App = () => {
             <button onClick={dataGet} >取得</button>
             <br/>
             <button onClick={autoInput} >自動入力</button>
-            <button>削除</button>
+            <button onClick={allDelete} >削除</button>
           </div>
           <NameList
             studentList={studentList}
