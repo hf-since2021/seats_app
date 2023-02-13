@@ -181,6 +181,12 @@ const App = () => {
     for(let i=1;i<=30;i++){
       console.log(inputOrder[i][2] <= 10);
     };
+
+    const rowSize1    = 5;
+    const columnSize1 = 6;
+    const rowIndex1    = [...Array(rowSize).keys()];
+    const columnIndex1 = [...Array(columnSize).keys()];
+    const autoInputSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
   };
 
   // props: selectText, moveFocus, seat, changeValue
@@ -230,7 +236,9 @@ const App = () => {
           <div>
             <button onClick={dataPost} >送信</button>
             <button onClick={dataGet} >取得</button>
+            <br/>
             <button onClick={autoInput} >自動入力</button>
+            <button>削除</button>
           </div>
           <NameList
             studentList={studentList}
