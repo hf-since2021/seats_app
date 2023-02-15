@@ -95,9 +95,15 @@ const App = () => {
     const activeRow = Number(e.target.dataset.row);
     const activeColumn = Number(e.target.dataset.column);
     // 変更部分をstate(seat)に反映
-    const newSeat = [...seat];
-    newSeat[activeRow][activeColumn] = Number(e.target.value);
-    setSeat(() => newSeat);
+    // const newSeat = [...seat];
+    // newSeat[activeRow][activeColumn] = Number(e.target.value);
+    // setSeat(() => newSeat);
+    setSeat((preSeat) => {
+      const newSeat = [...preSeat];
+      newSeat[activeRow][activeColumn] = Number(e.target.value);
+      return newSeat;
+  });
+
 
     // 変更部分をstate(studentArrangement)に反映
     const index = searchValue(studentList, {id: Number(e.target.value)});
@@ -191,7 +197,8 @@ const App = () => {
         autoInputSeat[inputOrder[i][0]][inputOrder[i][1]] = "";
       }
     };
-    setSeat(autoInputSeat);
+    setSeat(() => autoInputSeat);
+    console.log("")
   };
 
   const allDelete = () => {
