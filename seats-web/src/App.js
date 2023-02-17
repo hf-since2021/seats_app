@@ -13,7 +13,7 @@ const App = () => {
   const columnSize = 6;
   const rowIndex    = [...Array(rowSize).keys()];
   const columnIndex = [...Array(columnSize).keys()];
-  const initialSeat = rowIndex.map(()=>columnIndex.map(()=>{}));
+  const initialSeat = rowIndex.map(()=>columnIndex.map(()=>""));
   const [seat, setSeat] = useState(initialSeat);
 
   // 生徒情報、APIで取得予定
@@ -198,7 +198,6 @@ const App = () => {
       }
     };
     setSeat(() => autoInputSeat);
-    console.log("")
   };
 
   const allDelete = () => {
@@ -206,7 +205,7 @@ const App = () => {
     const columnSize1 = seat[0].length;
     const rowIndex1    = [...Array(rowSize1).keys()];
     const columnIndex1 = [...Array(columnSize1).keys()];
-    const deletedSeat = rowIndex1.map(()=>columnIndex1.map(()=>{}));
+    const deletedSeat = rowIndex1.map(()=>columnIndex1.map(()=>""));
     setSeat(deletedSeat);
   };
 
@@ -253,6 +252,10 @@ const App = () => {
             seat={seat}
             // selectText={selectText}
             changeValue={changeValue}
+            // dataPost={dataPost}
+            // dataGet={dataGet}
+            // autoInput={autoInput}
+            // allDelete={allDelete}
           />
           <div>
             <button onClick={dataPost} >送信</button>

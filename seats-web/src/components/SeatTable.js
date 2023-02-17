@@ -26,7 +26,8 @@ const SeatTable = (props) => {
                   return(
                     <td key={colKey}>
                       <input {...register(r, c)}
-                            defaultValue={props.seat[r][c]}
+                            // defaultValue={props.seat[r][c]}
+                            value={props.seat[r][c]}
                             onChange={props.changeValue}
                             onFocus={selectText}
                             autoComplete="off" />
@@ -38,6 +39,13 @@ const SeatTable = (props) => {
           })}
         </tbody>
       </table>
+      {/* <div>
+        <button onClick={props.dataPost} >送信</button>
+        <button onClick={props.dataGet} >取得</button>
+        <br/>
+        <button onClick={props.autoInput} >自動入力</button>
+        <button onClick={props.allDelete} >削除</button>
+      </div> */}
     </>
   );
 }
