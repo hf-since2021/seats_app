@@ -198,6 +198,16 @@ const App = () => {
       }
     };
     setSeat(() => autoInputSeat);
+
+    const autoStudentArrangement = rowIndex.map((r)=>columnIndex.map((c)=>{
+      const index = searchValue(studentList, {id: autoInputSeat[r][c]});
+      if(index > -1){
+        return {gcn: studentList[index].gcn, name: studentList[index].name, kana: studentList[index].kana}
+      }else{
+        return {gcn: "", name: "", kana: ""}
+      }
+    }));
+    setStudentArrangement(autoStudentArrangement);
   };
 
   const allDelete = () => {
